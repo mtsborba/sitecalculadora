@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora</title>
+    <style>
+        /* usei o style dentro do html para ser mais rapido, para nao abrir outro documento somente em css*/
+        * {
+            /* esse * é para eu modificar todos os elementos*/
+            margin: 0;
+            padding: 0;
+        }
+
+        .fundo {
+            background-image: linear-gradient(45deg, black, aqua );
+            /* linear-gradient serve para trazer esse ar de degrade no fundo*/
+            /* 45deg é porque eu quero o efeito em 45 graus*/
+            /* de uma cor a outra*/
+
+            height: 100vh; /* nao estava funcionando em % entao usei o vh*/
+            color: white;
+            font-family: Arial, Helvetica, sans-serif;
+            text-align: center; /* para centralizar meu nome*/
+        }
+
+        .calculadora{
+            position: absolute;
+            background-color: rgba(0, 0, 0, 0.8); /* usei o rgba porque tem o alpha, ele deixa a cor mais transparente.*/
+                                                    /* se eu usar o alpha em 0 ele fica totalmente transparente */
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%); /* transform é usado para aplicar transformaçoes em elementos*/
+                       /*translate é usado para mover um elemento no eixo X e/ou eixo Y*/
+                       /* se eu usasse so o top e o left a ponta esquerda da minha div iria ficar no centro da tela, mas o resto nao iria*/
+                       /* entao eu tive que mover ele em diagonal, no caso usei o translate -50%, -50% para fazer essa movimentação e deixar ele exatamente no meio da tela*/
+
+            border-radius: 15px; /* deixar a borda um pouco arredondada... LA ELE*/        
+            padding: 15px;  /* distancia de 15px entre o elemento e a borda */
+        }
+
+        .botao{
+            width: 50px; /* largura de 50px*/
+            height: 50px; /* altura de 50px */
+            font-size: 25px;
+            cursor: pointer; /* para ficar com a "maozinha" quano passar com o mouse em cima dos numeros e etc*/
+            background-color: rgb(31, 31, 31);
+            border: none; /* para tirar a borda*/
+            color: white;
+            margin: 3px; /* usei o margin para que os espaços fiquem certos em todos os botoes */
+        }
+
+        .botao:hover{ /* hover é quando o cursor do mouse esta sobre ele, no caso sobre o botao, por isso chamo primeiro o botao dps o hover */
+            background-color: black; /* quando eu passar com o cursor em cima vai ficar black*/
+        }
+
+        #resultado{
+            background-color: white;
+            width: 224px;
+            height: 30px;
+            margin: 5px;
+            font-size: 25px;
+            color: black;
+            text-align: right; /* coloquei para deixar alinhado para direita*/
+        }
+    </style>
+</head>
+
+<body>
+    <div class="fundo">
+        <h1>MATHEUS BORBA</h1>
+            <div class="calculadora">
+                <h1>Calculadora</h1>
+                <p id="resultado"></p>
+                <table>
+                    <tr><!-- tr sao linhas-->
+                        <td><button class="botao" onclick="clean()">C </button></td> <!-- td sao os conteudos dentro da linha, que no caso tem botoes-->
+                        <td><button class="botao" onclick="back()">L</button></td> <!-- utilizei a letra L para limpar um numero por vez. Já o C é para limpar TUDO-->
+                        <td><button class="botao" onclick="insert('/')">/</button></td>
+                        <td><button class="botao" onclick="insert('*')">x</button></td>
+                    </tr>
+                    <tr>
+                        <td><button class="botao" onclick="insert('7')">7</button></td> <!-- quando eu clicar nos numeros ele vai chamar a funcao insert-->
+                                                                                        <!-- jogando um parametro, que neste caso é o numero ('7')-->
+                        <td><button class="botao" onclick="insert('8')">8</button></td>
+                        <td><button class="botao" onclick="insert('9')">9</button></td>
+                        <td><button class="botao" onclick="insert('-')">-</button></td>
+                    </tr>
+                    <tr>
+                        <td><button class="botao" onclick="insert('4')">4</button></td>
+                        <td><button class="botao" onclick="insert('5')">5</button></td>
+                        <td><button class="botao" onclick="insert('6')">6</button></td>
+                        <td><button class="botao" onclick="insert('+')">+</button></td>
+                    </tr>
+                    <tr>
+                        <td><button class="botao" onclick="insert('1')">1</button></td>
+                        <td><button class="botao" onclick="insert('2')">2</button></td>
+                        <td><button class="botao" onclick="insert('3')">3</button></td>
+                        <td rowspan="2"><button class="botao" style="height: 107px;" onclick="calcular()">=</button></td> <!-- aqui eu usei o height para ter uma altura de 106px-->
+                                                                                                     <!-- que é exatamente o tamanho que preciso para que ele fique certinho-->
+                        <!-- rowspan é para expandir linha, pois row é linha. a quantidade que eu quero expandir é 2 linhas-->
+                    </tr>
+                    <tr>
+                        <td colspan="2"><button class="botao" style="width: 107px;" onclick="insert('0')">0</button></td>  <!-- usei o width para ter uma largura de 106px -->
+                                                                                                     <!-- que é exatamente a largura que preciso para que ele fique certnho-->
+                        <!-- colspan é para expandir coluna, pois col é coluna. a quantidade que eu quero expandir é 2 colunas-->
+                        <td><button class="botao" onclick="insert('.')">.</button></td>
+                    </tr>
+                </table>
+            </div>
+    </div>
+
+    <script>
+        function insert(num)  // criei uma funcao para chamar um parametro quando eu clico nos numeros, chamei o parametro de num e a funcao de insert
+        {
+              var numero = document.getElementById('resultado').innerHTML    // criei uma variavel chamada numero para guardar o numero nela
+              document.getElementById('resultado').innerHTML = numero + num; // agr ele vai pegar o que ja tem e vai colocar junto com o numero que ta vindo do parametro num
+              // se eu nao fizesse isso, o primeiro numero que eu escolhi iria sumir dps de escolher outro numero
+
+              // aqui basicamente o get pega o resultado que é um id em html e com o innerHTML transforma em num    
+            // que no caso o num é meu parametro
+        }   
+        
+        function clean() // funcao clean para limpar o resultado
+        {
+            document.getElementById('resultado').innerHTML = "";
+        }
+
+        function back() // funcao back é feita para voltar
+        {
+           var resultado = document.getElementById('resultado').innerHTML; // criei uma variavel chamada resultado para ela gravar a ultima acao que fiz
+           document.getElementById('resultado').innerHTML = resultado.substring(0, resultado.length -1); // esse length vai ler todos os caracteres que temos dentro do p
+                                                                                                         // que no caso o P é o resultado, e vai diminuir 1
+
+        }
+
+        function calcular()
+        {
+            var resultado = document.getElementById('resultado').innerHTML; // criei uma variavel chamada resultado para jogar dentro do meu id resultado
+            if(resultado) // se tiver algo dentro do resultado ele vai fazer a execucao
+            {
+                document.getElementById('resultado').innerHTML = eval(resultado); //eval é simplesmente o cara que calcula tudo, se estiver algo dentro do resultado ele vai cal
+            }
+
+            else // se nao tiver nada dentro do resultado ele vai aparecer "vazio"
+            {
+              document.getElementById('resultado').innerHTML = "vazio";
+            }
+        }
+
+    </script>
+
+
+
+</body>
+
+</html>
